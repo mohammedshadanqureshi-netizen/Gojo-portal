@@ -1,56 +1,27 @@
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let particlesArray;
+// Cursor follow – now always visible
+const dot = document.getElementById('dot');
+const ring = document.getElementById('ring');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    init();
-});
-
-class Particle {
-    constructor(x, y, size, color, velocity) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.color = color;
-        this.velocity = velocity;
-    }
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-    }
-    update() {
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-        if(this.x < 0 || this.x > canvas.width) this.velocity.x *= -1;
-        if(this.y < 0 || this.y > canvas.height) this.velocity.y *= -1;
-        this.draw();
-    }
+if (dot && ring) {
+  document.addEventListener('mousemove', e => {
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  });
 }
 
-function init() {
-    particlesArray = [];
-    const numberOfParticles = 120;
-    for(let i=0;i<numberOfParticles;i++){
-        let size=Math.random()*3+1;
-        let x=Math.random()*canvas.width;
-        let y=Math.random()*canvas.height;
-        let velocity={x:(Math.random()-0.5)*1.5, y:(Math.random()-0.5)*1.5};
-        particlesArray.push(new Particle(x,y,size,'#00ffff',velocity));
-    }
+// Cursed energy particles
+const particlesContainer = document.getElementById('particles');
+for (let i = 0; i < 100; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.width = p.style.height = Math.random() * 5 + 1 + 'px';
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.top = Math.random() * 100 + 'vh';
+  p.style.setProperty('--tx', (Math.random() - 0.5) * 800 + 'px');
+  p.style.setProperty('--ty', (Math.random() - 0.5) * 800 + 'px');
+  p.style.animationDelay = Math.random() * 40 + 's';
+  p.style.animationDuration = (Math.random() * 20 + 20) + 's';
+  particlesContainer.appendChild(p);
 }
-function animate() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(let i=0;i<particlesArray.length;i++){
-        particlesArray[i].update();
-    }
-    requestAnimationFrame(animate);
-}
-init();
-animate();
